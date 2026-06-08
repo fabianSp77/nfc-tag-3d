@@ -23,9 +23,24 @@
       "tagline": "4-Kachel-Aufsteller. Vier frei belegbare Ziele auf einen Tap.",
       "tileCount": 4,
       "price": 129
+    },
+    {
+      "id": "tap-bar-max",
+      "name": "Tap Bar Max",
+      "tagline": "Großformat-Aufsteller mit 4 Kacheln. Maximale Präsenz am Tresen.",
+      "tileCount": 4,
+      "price": 149
     }
   ],
   "defaultProductId": "tap-bar-4",
+  "range": [
+    { "id": "tap-bar-2", "name": "Tap Bar 2", "label": "Bar 2", "tiles": 2, "price": 89, "tagline": "2 Kacheln, geprägtes Logo, eigene Icons.", "configurable": true },
+    { "id": "tap-bar-3", "name": "Tap Bar 3", "label": "Bar 3", "tiles": 3, "price": 99, "tagline": "Bewertung, Social und ein Extra.", "configurable": true },
+    { "id": "tap-bar-4", "name": "Tap Bar 4", "label": "Bar 4", "tiles": 4, "price": 129, "tagline": "Vier frei belegbare Ziele auf einen Tap.", "configurable": true, "badge": "Beliebt" },
+    { "id": "tap-bar-max", "name": "Tap Bar Max", "label": "Bar Max", "tiles": 4, "price": 149, "tagline": "Großformat. Maximale Präsenz am Tresen.", "configurable": true },
+    { "id": "tap-tile", "name": "Tap Tile", "label": "Tile", "tiles": 1, "price": 15, "tagline": "Einzelne NFC-Kachel — deine Farbe, dein Icon, dein Link.", "configurable": false },
+    { "id": "tap-snap", "name": "Tap Snap", "label": "Snap", "tiles": 4, "price": 39, "tagline": "MagSafe-Visitenkarte mit vier antippbaren Ecken.", "configurable": false }
+  ],
   "parts": [
     { "id": "base", "label": "Korpus", "default": "#F2F1EB" },
     { "id": "frame", "label": "Rahmen", "default": "#1C1C1C" },

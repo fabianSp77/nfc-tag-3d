@@ -3,23 +3,243 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#f4f4f0" />
-    <title>NFC-Tag Konfigurator · Tap Bar</title>
-    <meta
-      name="description"
-      content="Gestalte deinen NFC-Tap-Bar in 3D: Farben pro Bauteil, Icons pro Kachel, eigenes Logo. Direkt im Browser drehen und konfigurieren."
-    />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c1c1c'/%3E%3Cpath d='M9 20a7 7 0 0 1 14 0M12 20a4 4 0 0 1 8 0' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='21' r='1.6' fill='white'/%3E%3C/svg%3E" />
+    <meta name="theme-color" content="#f4f1e9" />
+    <title>Tap — NFC-Produkte für deinen Tresen | Mehr Bewertungen auf einen Fingertipp</title>
+    <meta name="description" content="Individuell gestaltete NFC-Aufsteller, die aus jedem Kundenkontakt eine Verbindung machen. Farben, Icons und Logo selbst gestalten — live in 3D. Kein App, kein QR-Scan." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231f1d1a'/%3E%3Cpath d='M9 20a7 7 0 0 1 14 0M12 20a4 4 0 0 1 8 0' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='21' r='1.6' fill='white'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,600;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <div id="app">
-      <main id="stage">
-        <canvas id="scene"></canvas>
-        <div id="stage-hint">Zum Drehen ziehen · Scrollen zum Zoomen · Bauteil anklicken zum Einfärben</div>
-        <div id="loading">Konfigurator wird geladen …</div>
-      </main>
-      <aside id="panel"><!-- Panel-UI wird von src/ui/Panel.js erzeugt --></aside>
-    </div>
-    <script type="module" src="/src/main.js"></script>
+    <!-- Kornige Papier-Textur über der ganzen Seite -->
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="site-header" id="top">
+      <a class="brand" href="#top" aria-label="Tap Startseite">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><path d="M6 21a11 11 0 0 1 20 0M11 21a6 6 0 0 1 10 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="22" r="2" fill="currentColor"/></svg>
+        </span>
+        <span class="brand-word">Tap</span>
+      </a>
+      <nav class="site-nav">
+        <a href="#produkte">Produkte</a>
+        <a href="#how">So funktioniert's</a>
+        <a href="#faq">FAQ</a>
+        <a href="#kontakt">Kontakt</a>
+      </nav>
+      <a class="btn btn-primary btn-sm" href="konfigurator.html">Konfigurieren</a>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-copy" data-reveal>
+          <span class="eyebrow">NFC zum Antippen · ohne App, ohne QR-Scan</span>
+          <h1>Mehr Bewertungen.<br />Mehr Follower.<br /><em>Ein Fingertipp.</em></h1>
+          <p class="lede">
+            Individuell gestaltete NFC-Produkte, die aus jedem Kundenkontakt eine
+            bleibende Verbindung machen — für deinen Tresen, die Hosentasche und
+            alles dazwischen.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="konfigurator.html">Konfigurator öffnen →</a>
+            <a class="btn btn-ghost" href="#how">So funktioniert's</a>
+          </div>
+          <div class="proof">
+            <span class="stars" aria-hidden="true">★★★★★</span>
+            <span><strong>60+ Betriebe</strong> tippen schon mit</span>
+          </div>
+        </div>
+        <div class="hero-stage" data-reveal>
+          <div class="hero-glow" aria-hidden="true"></div>
+          <canvas id="hero-canvas"></canvas>
+          <div class="hero-loading">3D wird geladen …</div>
+          <span class="hero-tag">Live in 3D — zieh mich!</span>
+        </div>
+      </section>
+
+      <!-- TRUST -->
+      <section class="trust" data-reveal>
+        <p class="trust-line">
+          Vertraut von <em>Cafés, Einzelhandel, Pop-ups</em> — und allem dazwischen.
+        </p>
+        <ul class="trust-chips">
+          <li>Cafés &amp; Bäckereien</li>
+          <li>Friseure &amp; Beauty</li>
+          <li>Einzelhandel</li>
+          <li>Praxen</li>
+          <li>Restaurants</li>
+          <li>Pop-ups &amp; Märkte</li>
+        </ul>
+      </section>
+
+      <!-- PRODUKTE -->
+      <section class="range" id="produkte">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">Das Sortiment</span>
+          <h2>Wähle deinen Tap.</h2>
+          <p>
+            Gebrandeter Tresen-Aufsteller mit geprägtem Logo und eigenen Icons.
+            Die beliebteste Wahl für Cafés, Salons und Einzelhandel.
+          </p>
+        </div>
+        <div class="product-grid" id="produkt-grid"><!-- per JS aus products.json --></div>
+        <p class="range-foot" data-reveal>
+          Custom- oder Großbestellung? <a href="#kontakt">Sprich uns an →</a>
+        </p>
+      </section>
+
+      <!-- WARUM -->
+      <section class="why" data-reveal>
+        <div class="why-inner">
+          <span class="eyebrow light">Warum Tap</span>
+          <h2>Gebaut für Betriebe, die von <em>echten Beziehungen</em> leben.</h2>
+          <p>
+            Wir haben Tap gebaut, weil wir jeden Tag gesehen haben, wie Betriebe
+            warme Kontakte verlieren. Nicht aus Mangel an Mühe — sondern wegen
+            eines Moments der Reibung. Ein Kunde geht, vergisst zu folgen,
+            hinterlässt nie eine Bewertung. Tap schließt diese Lücke mit einer
+            Berührung.
+          </p>
+          <ul class="why-chips">
+            <li>Keine App</li>
+            <li>Kein Abo</li>
+            <li>Kein Lock-in</li>
+            <li>Links jederzeit änderbar</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section class="how" id="how">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">In drei Schritten</span>
+          <h2>So funktioniert's</h2>
+        </div>
+        <div class="steps">
+          <article class="step" data-reveal>
+            <span class="step-no">01</span>
+            <h3>Kommt einsatzbereit an</h3>
+            <p>
+              Deine Tap-Produkte sind vorprogrammiert — jede Kachel trägt schon
+              deine Links. Kein Einrichten, kein technisches Wissen. Ziel später
+              ändern? Mit der kostenlosen App „NFC&nbsp;Tools" in Sekunden.
+            </p>
+          </article>
+          <article class="step" data-reveal>
+            <span class="step-no">02</span>
+            <h3>Kunde tippt. Seite öffnet sich.</h3>
+            <p>
+              Handy über eine Kachel halten — das Ziel öffnet sich sofort.
+              Google-Bewertung, Instagram, WhatsApp, dein Shop, Treueprogramm.
+              Keine App, kein QR-Code zum Scannen.
+            </p>
+          </article>
+          <article class="step" data-reveal>
+            <span class="step-no">03</span>
+            <h3>Kacheln frei tauschen</h3>
+            <p>
+              Jede Kachel ist magnetisch und abnehmbar. Layout umstellen, neue
+              Kacheln nachbestellen, Ziele tauschen. Dein Display wächst mit
+              deinem Geschäft.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="faq" id="faq">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">FAQ</span>
+          <h2>Gute Fragen.<br /><em>Ehrliche Antworten.</em></h2>
+        </div>
+        <div class="faq-list" data-reveal>
+          <details>
+            <summary>Brauche ich eine App oder ein Konto?</summary>
+            <p>Nein. Kein Konto, keine Software, kein Einrichtungs-Assistent. Deine Tap-Produkte funktionieren direkt aus der Verpackung — alles ist vor dem Versand vorprogrammiert.</p>
+          </details>
+          <details>
+            <summary>Kann ich die Links später ändern?</summary>
+            <p>Ja. Lade die kostenlose App „NFC Tools", halte eine Kachel an dein Handy und ändere das Ziel in Sekunden.</p>
+          </details>
+          <details>
+            <summary>Welche Handys funktionieren mit Tap?</summary>
+            <p>Alle Android-Handys und iPhones ab dem iPhone 11. Das deckt die allermeisten Geräte ab, die heute im Einsatz sind.</p>
+          </details>
+          <details>
+            <summary>Sind die Produkte robust? Vertragen sie Nässe?</summary>
+            <p>Ja, beides. Aus langlebigem, recyceltem und biologisch abbaubarem Kunststoff — einfach abwischen, ganz ohne Sorge.</p>
+          </details>
+          <details>
+            <summary>Brauchen die Kacheln Batterien oder Strom?</summary>
+            <p>Nein. NFC-Kacheln sind passiv und ziehen ihre Energie aus dem Handy, das sie liest. Nichts zu laden, nichts zu tauschen.</p>
+          </details>
+          <details>
+            <summary>Kann ich alles mit meinem Branding gestalten?</summary>
+            <p>Ja. Farben pro Bauteil, Icons pro Kachel und dein eigenes Logo — alles live im Konfigurator. Sonderwünsche einfach bei der Bestellung dazuschreiben.</p>
+          </details>
+          <details>
+            <summary>Wie lange dauert die Lieferung?</summary>
+            <p>Standard innerhalb von 10 Werktagen ab Auftragsbestätigung. Schneller nötig? Express auf Anfrage.</p>
+          </details>
+          <details>
+            <summary>Bekomme ich vorher ein Muster zu sehen?</summary>
+            <p>Ja. Vor der Produktion bekommst du eine digitale Vorschau zur Freigabe. Es wird nichts gefertigt, bevor du bestätigst.</p>
+          </details>
+        </div>
+      </section>
+
+      <!-- KONTAKT -->
+      <section class="contact" id="kontakt">
+        <div class="contact-grid">
+          <div class="contact-copy" data-reveal>
+            <span class="eyebrow">Kontakt</span>
+            <h2>Sprich mit uns.</h2>
+            <p>Custom-Projekte? Großbestellungen? Oder einfach eine Frage? Schreib uns — wir melden uns innerhalb eines Werktags.</p>
+          </div>
+          <form class="contact-form" id="contact-form" data-reveal novalidate>
+            <label>Dein Name<input type="text" name="name" autocomplete="name" required placeholder="Vor- und Nachname" /></label>
+            <label>E-Mail<input type="email" name="email" autocomplete="email" required placeholder="du@beispiel.de" /></label>
+            <label>WhatsApp / Telefon <span class="opt">(optional)</span><input type="tel" name="phone" placeholder="+49 …" /></label>
+            <label>Nachricht<textarea name="message" rows="4" placeholder="Worum geht's? Menge, Wunschtermin, Sonderwünsche …"></textarea></label>
+            <button type="submit" class="btn btn-primary">Anfrage senden →</button>
+            <p class="form-note" id="form-note" hidden></p>
+          </form>
+        </div>
+      </section>
+
+      <!-- QUOTE + FINAL CTA -->
+      <section class="closer" data-reveal>
+        <blockquote>
+          „Jeder Kunde, der ohne zu tippen geht, ist eine Verbindung, die du
+          <em>nie zurückbekommst</em>."
+        </blockquote>
+        <div class="closer-cta">
+          <h2>Finde deinen Tap. Fang an zu verbinden.</h2>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="konfigurator.html">Jetzt konfigurieren →</a>
+            <a class="btn btn-ghost" href="#kontakt">Custom anfragen</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="foot-brand">
+        <span class="brand-word">Tap</span>
+        <p>NFC-Produkte, die Kundenkontakte zu Verbindungen machen.</p>
+      </div>
+      <nav class="foot-nav">
+        <a href="#produkte">Produkte</a>
+        <a href="#how">So funktioniert's</a>
+        <a href="#faq">FAQ</a>
+        <a href="#kontakt">Kontakt</a>
+        <a href="konfigurator.html">Konfigurator</a>
+      </nav>
+      <p class="foot-meta">Alle Preise inkl. MwSt. · Entwickelt in Deutschland</p>
+    </footer>
+
+    <script type="module" src="/src/landing/landing.js"></script>
   </body>
 </html>
