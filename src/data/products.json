@@ -1,0 +1,66 @@
+{
+  "currency": "EUR",
+  "currencySymbol": "€",
+  "brand": "Tap",
+  "products": [
+    {
+      "id": "tap-bar-2",
+      "name": "Tap Bar 2",
+      "tagline": "2-Kachel-Aufsteller mit geprägtem Logo. Beliebt bei Cafés & Salons.",
+      "tileCount": 2,
+      "price": 89
+    },
+    {
+      "id": "tap-bar-3",
+      "name": "Tap Bar 3",
+      "tagline": "3-Kachel-Aufsteller. Bewertung, Social und ein Extra.",
+      "tileCount": 3,
+      "price": 99
+    },
+    {
+      "id": "tap-bar-4",
+      "name": "Tap Bar 4",
+      "tagline": "4-Kachel-Aufsteller. Vier frei belegbare Ziele auf einen Tap.",
+      "tileCount": 4,
+      "price": 129
+    }
+  ],
+  "defaultProductId": "tap-bar-4",
+  "parts": [
+    { "id": "base", "label": "Korpus", "default": "#F2F1EB" },
+    { "id": "frame", "label": "Rahmen", "default": "#1C1C1C" },
+    { "id": "tile", "label": "Kacheln", "default": "#1C1C1C" },
+    { "id": "icon", "label": "Icons", "default": "#FFFFFF" },
+    { "id": "logo", "label": "Logo", "default": "#1C1C1C" }
+  ],
+  "palette": [
+    { "name": "Pearl White", "hex": "#F2F1EB" },
+    { "name": "Jade White", "hex": "#FFFFFF" },
+    { "name": "Slate Black", "hex": "#1C1C1C" },
+    { "name": "Graphite", "hex": "#4A4A4A" },
+    { "name": "Sky Blue", "hex": "#3B82F6" },
+    { "name": "Royal", "hex": "#1E3A8A" },
+    { "name": "Forest", "hex": "#2F5D3A" },
+    { "name": "Sage", "hex": "#9CAF88" },
+    { "name": "Sunflower", "hex": "#F2B705" },
+    { "name": "Coral", "hex": "#E8643C" },
+    { "name": "Ruby", "hex": "#9B1B30" },
+    { "name": "Lavender", "hex": "#8B7FD6" },
+    { "name": "Blush", "hex": "#F3C9D3" },
+    { "name": "Sand", "hex": "#D8C3A5" }
+  ],
+  "icons": [
+    { "id": "globe", "label": "Website" },
+    { "id": "camera", "label": "Instagram" },
+    { "id": "chat", "label": "WhatsApp" },
+    { "id": "note", "label": "TikTok" },
+    { "id": "star", "label": "Google" },
+    { "id": "heart", "label": "Favorit" },
+    { "id": "mail", "label": "E-Mail" },
+    { "id": "pin", "label": "Standort" },
+    { "id": "music", "label": "Spotify" },
+    { "id": "play", "label": "YouTube" },
+    { "id": "cart", "label": "Shop" },
+    { "id": "qr", "label": "QR-Code" }
+  ]
+}
