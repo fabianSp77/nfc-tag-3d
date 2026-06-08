@@ -1,12 +1,14 @@
 name: Deploy zu GitHub Pages
 
 # Deployt den gebauten Konfigurator auf GitHub Pages.
-# Läuft auf dem Default-Branch (= aktiver Entwicklungs-/Deploy-Branch) sowie
-# manuell per "Run workflow". `enablement: true` aktiviert Pages automatisch
-# beim ersten Lauf, sodass kein manueller Settings-Schritt nötig ist.
+#
+# VORAUSSETZUNG (einmalig, manuell): GitHub Pages muss aktiviert sein
+#   Settings → Pages → Source: "GitHub Actions".
+# Für PRIVATE Repos benötigt Pages einen bezahlten Plan (Pro/Team). Der
+# Actions-Token darf Pages nicht selbst anlegen ("Resource not accessible by
+# integration"), deshalb läuft dieser Workflow bewusst NUR manuell, bis Pages
+# aktiv ist. Danach kann der Push-Trigger wieder ergänzt werden.
 on:
-  push:
-    branches: ["claude/zen-feynman-9n2c6v"]
   workflow_dispatch:
 
 permissions:

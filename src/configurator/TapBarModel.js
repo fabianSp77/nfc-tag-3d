@@ -26,6 +26,7 @@ export class TapBarModel {
     this.pickables = [];          // Meshes für den Raycaster
     this._tileMeshes = [];        // Kachel-Meshes (für Icon-Nachladen)
     this._iconMeshes = [];        // aktuell montierte Icon-Meshes
+    this._iconTokens = [];        // pro Kachel: Anfrage-Token gegen Race-Conditions
     this._disposable = [];        // Geometrien zum Aufräumen beim Rebuild
     this._selected = null;
     this.materials = this._createMaterials();
@@ -160,10 +161,19 @@ export class TapBarModel {
       tile.remove(prev);
       this._removePickable(prev);
       prev.geometry?.dispose();
+      this._iconMeshes[index] = null;
     }
+    // Anfrage-Token: bei schnellem Icon-Wechsel (oder langsamer Verbindung)
+    // werden zwischenzeitlich überholte Ladevorgänge verworfen, statt ein
+    // zweites Icon auf dieselbe Kachel zu legen.
+    const token = (this._iconTokens[index] || 0) + 1;
+    this._iconTokens[index] = token;
     loadIconGeometry(iconId)
       .then((geo) => {
-        if (this._tileMeshes[index] !== tile) return; // Kachel zwischenzeitlich weg
+        if (this._tileMeshes[index] !== tile || this._iconTokens[index] !== token) {
+          geo.dispose(); // veraltete Anfrage – Geometrie nicht montieren
+          return;
+        }
         const icon = new THREE.Mesh(geo, this.materials.icon);
         icon.rotation.x = -Math.PI / 2;               // flach auf die Kachel legen
         icon.position.y = TILE_H / 2 + 0.01;          // bündig auf der Oberseite
@@ -258,6 +268,7 @@ export class TapBarModel {
     this._disposable = [];
     this.pickables = [];
     this._iconMeshes = [];
+    this._iconTokens = [];
     this._tileMeshes = [];
   }
 }
