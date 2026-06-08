@@ -1,3 +1,5 @@
+import { iconDataUri } from '../configurator/icons.js';
+
 /**
  * Konfigurations-Panel (Vanilla-DOM). Spiegelt den Zustand des Configurators
  * und schreibt Änderungen zurück. Deutsche Oberfläche.
@@ -149,7 +151,7 @@ export class Panel {
           class: 'icon-btn',
           'data-icon': icon.id,
           title: icon.label,
-        }, h('img', { src: `${import.meta.env.BASE_URL}icons/${icon.id}.svg`, alt: icon.label }));
+        }, h('img', { src: iconDataUri(icon.id), alt: icon.label }));
         btn.addEventListener('click', () => {
           this.cfg.setTileIcon(i, icon.id);
           this._syncTileIcons(i);

@@ -2,26 +2,43 @@ import * as THREE from 'three';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 
 /**
- * SVG → 3D. Der Signatur-Trick des Vorbilds (Briefing §2.3):
- * Icons liegen als simple SVG-Dateien vor und werden live zu 3D extrudiert.
- * Neues Icon = einfach eine SVG in /public/icons/ ablegen.
+ * Icons: SVG → 3D. Wie beim Vorbild liegen Icons als simple SVGs vor und werden
+ * zur Laufzeit zu 3D extrudiert (ExtrudeGeometry). Neues Icon = SVG in
+ * src/icons/ ablegen + Eintrag in products.json.
+ *
+ * Die SVGs werden zur BUILD-Zeit gebündelt (kein Runtime-fetch). Dadurch
+ * funktioniert der Konfigurator unter jedem Basis-Pfad, offline und als
+ * single-file Build (file://).
  */
+const rawSvg = import.meta.glob('../icons/*.svg', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+const svgById = {};
+for (const [path, text] of Object.entries(rawSvg)) {
+  const id = path.split('/').pop().replace(/\.svg$/, '');
+  svgById[id] = text;
+}
+
 const loader = new SVGLoader();
-const cache = new Map();
 
+/** Inline Data-URI für die Icon-Vorschau im Panel (self-contained). */
+export function iconDataUri(id) {
+  const svg = svgById[id];
+  return svg ? 'data:image/svg+xml,' + encodeURIComponent(svg) : '';
+}
+
+/**
+ * Liefert eine FRISCHE extrudierte Geometrie (kein Cache): jede Kachel besitzt
+ * ihre eigene Geometrie, damit das Entsorgen einer Kachel keine andere trifft.
+ * Bleibt async (Promise) für kompatible Aufrufer.
+ */
 export function loadIconGeometry(id, { targetSize = 1.7, depth = 0.16 } = {}) {
-  const key = `${id}:${targetSize}:${depth}`;
-  if (cache.has(key)) return cache.get(key);
-
-  const promise = fetch(`${import.meta.env.BASE_URL}icons/${id}.svg`)
-    .then((res) => {
-      if (!res.ok) throw new Error(`Icon "${id}" nicht gefunden`);
-      return res.text();
-    })
-    .then((text) => buildGeometry(text, targetSize, depth));
-
-  cache.set(key, promise);
-  return promise;
+  const text = svgById[id];
+  if (!text) return Promise.reject(new Error(`Icon "${id}" nicht gefunden`));
+  return Promise.resolve(buildGeometry(text, targetSize, depth));
 }
 
 function buildGeometry(svgText, targetSize, depth) {
