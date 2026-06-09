@@ -83,7 +83,7 @@ export class TapBarModel {
     this._buildPanel(width);
     this._buildFrame(width);
     this._buildLogo(width, logoText, logoImage, logoTransform);
-    this._buildInstruction(width);
+    this._buildInstruction(width, innerWidth);
     this._buildShelf(width);
     this._buildBaseLabel(width);
     this._buildTiles(tileCount, innerWidth);
@@ -112,8 +112,8 @@ export class TapBarModel {
 
   _buildFrame(width) {
     const z = PANEL_T / 2 + 0.09;
-    const bar = 0.5;
-    const depth = 0.34;
+    const bar = 0.32;
+    const depth = 0.22;
     const x0 = width / 2 - 1.4;
     const yTop = this._panelH - 1.5;
     const yBot = SHELF_H + 1.7;
@@ -156,18 +156,18 @@ export class TapBarModel {
     const ax = area.cx + (align === 'left' ? -area.w * 0.18 : align === 'right' ? area.w * 0.18 : 0);
 
     if (hasImg) {
-      const w = area.w * 0.62 * scale;
-      const h = area.h * (hasText ? 0.48 : 0.68) * scale;
+      const w = area.w * 0.58 * scale;
+      const h = area.h * (hasText ? 0.34 : 0.48) * scale;
       const mesh = this._imageRegionMesh(logoImage, zoom, w, h);
-      mesh.position.set(ax, area.cy + (hasText ? area.h * 0.18 : 0), area.z);
+      mesh.position.set(ax, area.cy + (hasText ? area.h * 0.24 : area.h * 0.14), area.z);
       mesh.renderOrder = 2;
       this._addLogoMesh(mesh);
     }
     if (hasText) {
-      const w = area.w * 0.66 * scale;
-      const h = (hasImg ? area.h * 0.24 : area.h * 0.6) * scale;
+      const w = area.w * (hasImg ? 0.62 : 0.46) * scale;
+      const h = (hasImg ? 0.2 : 0.28) * area.h * scale;
       const mesh = this._captionRegionMesh(logoText, w, h);
-      mesh.position.set(ax, hasImg ? area.cy - area.h * 0.26 : area.cy, area.z);
+      mesh.position.set(ax, hasImg ? area.cy - area.h * 0.08 : area.cy + area.h * 0.16, area.z);
       mesh.renderOrder = 2;
       this._addLogoMesh(mesh);
     }
@@ -267,37 +267,43 @@ export class TapBarModel {
     return [words.slice(0, best).join(' '), words.slice(best).join(' ')];
   }
 
-  // Erklärung über den Kacheln: „HIER ANTIPPEN" + Pfeile zu den Kacheln.
-  _buildInstruction(width) {
+  // Erklärung: „HIER ANTIPPEN" im unteren Rückwand-Bereich (im Rahmen) und
+  // Pfeile in der Lücke direkt über den Kacheln.
+  _buildInstruction(width, innerWidth) {
+    const area = this._frameArea;
+    const z = PANEL_T / 2 + 0.07;
+    const txt = this._embossPlane('HIER ANTIPPEN', Math.min(width * 0.42, 5.4), 90);
+    txt.position.set(area.cx, area.cy - area.h * 0.34, z);
+    txt.renderOrder = 2;
+    this._addPart(txt, 'base', this._panelGroup);
+
+    const arr = this._embossPlane('▾     ▾     ▾', Math.min(innerWidth * 0.85, 5.2), 70);
+    arr.position.set(0, SHELF_H + 0.85, z);
+    arr.renderOrder = 2;
+    this._addPart(arr, 'base', this._panelGroup);
+  }
+
+  _embossPlane(text, w, canvasH) {
     const c = document.createElement('canvas');
     c.width = 512;
-    c.height = 200;
+    c.height = canvasH;
     const ctx = c.getContext('2d');
     ctx.fillStyle = '#ffffff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = '700 56px "Hanken Grotesk", Arial, sans-serif';
-    ctx.fillText('HIER ANTIPPEN', 256, 52);
-    ctx.font = '700 60px Arial, sans-serif';
-    ctx.fillText('▾     ▾     ▾', 256, 144);
+    ctx.font = `700 ${Math.round(canvasH * 0.62)}px "Hanken Grotesk", Arial, sans-serif`;
+    ctx.fillText(text, 256, canvasH / 2 + 2);
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = 4;
-    this._instrTex?.dispose();
-    this._instrTex = tex;
-    this._instrMat?.dispose();
-    this._instrMat = new THREE.MeshStandardMaterial({
+    const mat = new THREE.MeshStandardMaterial({
       color: new THREE.Color('#2c2c2c'),
       roughness: 0.5,
       metalness: 0,
       alphaMap: tex,
       alphaTest: 0.5,
     });
-    const w = Math.min(width * 0.5, 7);
-    const mesh = new THREE.Mesh(this._track(new THREE.PlaneGeometry(w, (w * 200) / 512)), this._instrMat);
-    mesh.position.set(0, SHELF_H + 1.15, PANEL_T / 2 + 0.07);
-    mesh.renderOrder = 2;
-    this._addPart(mesh, 'base', this._panelGroup);
+    return new THREE.Mesh(this._track(new THREE.PlaneGeometry(w, (w * canvasH) / 512)), mat);
   }
 
   _buildBaseLabel(width) {
@@ -361,7 +367,7 @@ export class TapBarModel {
     }
     const token = (this._iconTokens[index] || 0) + 1;
     this._iconTokens[index] = token;
-    loadIconGeometry(iconId)
+    loadIconGeometry(iconId, { targetSize: 1.55, depth: 0.11 })
       .then((geo) => {
         if (this._tileMeshes[index] !== tile || this._iconTokens[index] !== token) {
           geo.dispose();
@@ -403,7 +409,7 @@ export class TapBarModel {
     if (!mat) return;
     if (on) {
       mat.emissive.copy(HILITE);
-      mat.emissiveIntensity = 0.16;
+      mat.emissiveIntensity = 0.07;
     } else {
       mat.emissive.setRGB(0, 0, 0);
       mat.emissiveIntensity = 0.0;

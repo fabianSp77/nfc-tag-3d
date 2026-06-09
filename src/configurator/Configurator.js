@@ -34,7 +34,7 @@ export class Configurator {
       logoText: this.data.brand,
       logoImage: null,
       logoTransform: { align: 'center', scale: 1, zoom: 1 },
-      selected: 'tile',
+      selected: 'base',
       selectedTile: null,
     };
   }
