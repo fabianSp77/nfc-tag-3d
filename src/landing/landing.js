@@ -137,7 +137,8 @@ async function shootProductImages() {
     return;
   }
   const heroTiles = [{ icon: 'star' }, { icon: 'camera' }, { icon: 'chat' }, { icon: 'qr' }];
-  const colors = { base: '#F2F1EB', frame: '#1f1d1a', tile: '#245c3a', icon: '#ffffff', logo: '#1f1d1a' };
+  // Katalog-Look wie die echten Produktrenders: weißer Korpus, schwarze Icons/Schrift.
+  const colors = { base: '#F2F1EB', frame: '#F2F1EB', tile: '#F2F1EB', icon: '#1C1C1C', logo: '#1C1C1C' };
   for (const p of stands) {
     try {
       const url = await shooter.shoot({

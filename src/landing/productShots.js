@@ -21,6 +21,8 @@ export class ProductShooter {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.05;
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     this.scene = new THREE.Scene();
     const pmrem = new THREE.PMREMGenerator(this.renderer);
@@ -29,6 +31,18 @@ export class ProductShooter {
 
     const key = new THREE.DirectionalLight(0xffffff, 2.2);
     key.position.set(12, 20, 16);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    key.shadow.camera.near = 1;
+    key.shadow.camera.far = 90;
+    const s = 22;
+    key.shadow.camera.left = -s;
+    key.shadow.camera.right = s;
+    key.shadow.camera.top = s;
+    key.shadow.camera.bottom = -s;
+    key.shadow.bias = -0.0004;
+    key.shadow.normalBias = 0.02;
+    key.shadow.radius = 6;
     this.scene.add(key);
     const fill = new THREE.DirectionalLight(0xffffff, 0.5);
     fill.position.set(-16, 9, 9);
