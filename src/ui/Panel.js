@@ -215,6 +215,15 @@ export class Panel {
       input.addEventListener('input', (e) => this.cfg.setLogoTransform({ [key]: parseFloat(e.target.value) }));
       return h('label', { class: 'slider-row' }, h('span', {}, label), input);
     };
+    const posBtn = (label, val) => {
+      const b = h('button', { type: 'button', class: 'pos-btn', 'data-align': val }, label);
+      b.addEventListener('click', () => {
+        this.cfg.setLogoTransform({ align: val });
+        this._syncLogoPos();
+      });
+      return b;
+    };
+    this.refs.logoPos = h('div', { class: 'pos-row' }, posBtn('Links', 'left'), posBtn('Mitte', 'center'), posBtn('Rechts', 'right'));
     const remove = h('button', { type: 'button', class: 'ghost-sm' }, 'Logo entfernen');
     remove.addEventListener('click', () => {
       this.cfg.setLogoImage(null);
@@ -223,10 +232,10 @@ export class Panel {
     this.refs.logoAdjust = h(
       'div',
       { class: 'logo-adjust' },
-      h('p', { class: 'hint' }, 'Zuschnitt — Zoom & Position:'),
-      slider('Zoom', 'zoom', '1', '3', '0.02', t.zoom),
-      slider('Horizontal', 'x', '-1', '1', '0.02', t.x),
-      slider('Vertikal', 'y', '-1', '1', '0.02', t.y),
+      h('label', { class: 'field-label' }, 'Position auf der Rückwand'),
+      this.refs.logoPos,
+      slider('Größe', 'scale', '0.6', '1.25', '0.01', t.scale ?? 1),
+      slider('Zoom (Zuschnitt)', 'zoom', '1', '3', '0.02', t.zoom ?? 1),
       remove
     );
 
@@ -258,6 +267,14 @@ export class Panel {
     if (this.refs.logoAdjust) {
       this.refs.logoAdjust.style.display = this.cfg.state.logoImage ? 'block' : 'none';
     }
+    this._syncLogoPos();
+  }
+
+  _syncLogoPos() {
+    const a = this.cfg.state.logoTransform.align || 'center';
+    this.refs.logoPos?.querySelectorAll('.pos-btn').forEach((b) =>
+      b.classList.toggle('active', b.dataset.align === a)
+    );
   }
 
   _onLogoFile(fileObj) {

@@ -18,8 +18,8 @@ const HILITE = new THREE.Color('#2f6fe0');
 // Theken-Pose: Rückwand neigt sich leicht nach hinten, die Kachel-Ablage
 // schrägt nach vorne/oben — so wie das Teil auf dem Tresen steht und der
 // Kunde schräg von oben draufschaut.
-const PANEL_TILT = -0.17; // ~10° nach hinten
-const TRAY_TILT = 0.14; // ~8° nach vorne/oben
+const PANEL_TILT = -0.13; // Rückwand neigt leicht nach hinten (Sockel bleibt flach)
+const TILE_UP = 0.1; // Kacheln leicht nach vorne/oben angeschrägt
 
 /**
  * Prozedural erzeugter Tap-Bar-Aufsteller.
@@ -73,13 +73,17 @@ export class TapBarModel {
     // Neigungs-Gruppen
     this._panelGroup = new THREE.Group();
     this._trayGroup = new THREE.Group();
+    // Sockel/Ablage bleiben flach (Produkt steht gerade auf dem Tresen); nur die
+    // Rückwand neigt sich – um die Unterkante gepivotet (y-Ausgleich), damit der
+    // Sockel weiter auf y=0 aufsetzt.
     this._panelGroup.rotation.x = PANEL_TILT;
-    this._trayGroup.rotation.x = TRAY_TILT;
+    this._panelGroup.position.y = (PANEL_T / 2) * Math.abs(Math.sin(PANEL_TILT));
     this.group.add(this._panelGroup, this._trayGroup);
 
     this._buildPanel(width);
     this._buildFrame(width);
     this._buildLogo(width, logoText, logoImage, logoTransform);
+    this._buildInstruction(width);
     this._buildShelf(width);
     this._buildBaseLabel(width);
     this._buildTiles(tileCount, innerWidth);
@@ -137,27 +141,33 @@ export class TapBarModel {
 
   _buildLogo(width, logoText, logoImage, logoTransform) {
     this._clearLogo();
+    const t = logoTransform || {};
+    const align = t.align || 'center';
+    const scale = t.scale || 1;
+    const zoom = t.zoom || 1;
     this._logoText = logoText;
     this._logoImage = logoImage;
-    this._logoTransform = logoTransform || { zoom: 1, x: 0, y: 0 };
+    this._logoTransform = { align, scale, zoom };
 
     const area = this._frameArea;
     const hasImg = !!logoImage;
     const hasText = !!(logoText && String(logoText).trim());
+    // Block links/mittig/rechts auf der Rückwand positionieren.
+    const ax = area.cx + (align === 'left' ? -area.w * 0.18 : align === 'right' ? area.w * 0.18 : 0);
 
     if (hasImg) {
-      const w = area.w * 0.82;
-      const h = area.h * (hasText ? 0.52 : 0.76);
-      const mesh = this._imageRegionMesh(logoImage, this._logoTransform, w, h);
-      mesh.position.set(area.cx, area.cy + (hasText ? area.h * 0.18 : 0), area.z);
+      const w = area.w * 0.62 * scale;
+      const h = area.h * (hasText ? 0.48 : 0.68) * scale;
+      const mesh = this._imageRegionMesh(logoImage, zoom, w, h);
+      mesh.position.set(ax, area.cy + (hasText ? area.h * 0.18 : 0), area.z);
       mesh.renderOrder = 2;
       this._addLogoMesh(mesh);
     }
     if (hasText) {
-      const w = area.w * 0.86;
-      const h = hasImg ? area.h * 0.26 : area.h * 0.74;
+      const w = area.w * 0.66 * scale;
+      const h = (hasImg ? area.h * 0.24 : area.h * 0.6) * scale;
       const mesh = this._captionRegionMesh(logoText, w, h);
-      mesh.position.set(area.cx, hasImg ? area.cy - area.h * 0.27 : area.cy, area.z);
+      mesh.position.set(ax, hasImg ? area.cy - area.h * 0.26 : area.cy, area.z);
       mesh.renderOrder = 2;
       this._addLogoMesh(mesh);
     }
@@ -165,7 +175,7 @@ export class TapBarModel {
 
   // Bild in eine feste Region zeichnen: Standard = „contain" (keine Verzerrung),
   // zoom/x/y erlauben Zuschnitt (Hineinzoomen + Verschieben).
-  _imageRegionMesh(image, t, w, h) {
+  _imageRegionMesh(image, zoom, w, h) {
     const aspect = w / h;
     const CW = 512;
     const CH = Math.max(64, Math.round(512 / aspect));
@@ -174,12 +184,10 @@ export class TapBarModel {
     c.height = CH;
     const ctx = c.getContext('2d');
     const base = Math.min(CW / image.width, CH / image.height);
-    const s = base * (t.zoom || 1);
+    const s = base * (zoom || 1); // contain · zoom = zuschneiden
     const dw = image.width * s;
     const dh = image.height * s;
-    const dx = (CW - dw) / 2 + (t.x || 0) * (CW / 2);
-    const dy = (CH - dh) / 2 - (t.y || 0) * (CH / 2);
-    ctx.drawImage(image, dx, dy, dw, dh);
+    ctx.drawImage(image, (CW - dw) / 2, (CH - dh) / 2, dw, dh);
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = 4;
@@ -259,6 +267,39 @@ export class TapBarModel {
     return [words.slice(0, best).join(' '), words.slice(best).join(' ')];
   }
 
+  // Erklärung über den Kacheln: „HIER ANTIPPEN" + Pfeile zu den Kacheln.
+  _buildInstruction(width) {
+    const c = document.createElement('canvas');
+    c.width = 512;
+    c.height = 200;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '700 56px "Hanken Grotesk", Arial, sans-serif';
+    ctx.fillText('HIER ANTIPPEN', 256, 52);
+    ctx.font = '700 60px Arial, sans-serif';
+    ctx.fillText('▾     ▾     ▾', 256, 144);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 4;
+    this._instrTex?.dispose();
+    this._instrTex = tex;
+    this._instrMat?.dispose();
+    this._instrMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#2c2c2c'),
+      roughness: 0.5,
+      metalness: 0,
+      alphaMap: tex,
+      alphaTest: 0.5,
+    });
+    const w = Math.min(width * 0.5, 7);
+    const mesh = new THREE.Mesh(this._track(new THREE.PlaneGeometry(w, (w * 200) / 512)), this._instrMat);
+    mesh.position.set(0, SHELF_H + 1.15, PANEL_T / 2 + 0.07);
+    mesh.renderOrder = 2;
+    this._addPart(mesh, 'base', this._panelGroup);
+  }
+
   _buildBaseLabel(width) {
     const c = document.createElement('canvas');
     c.width = 512;
@@ -301,6 +342,7 @@ export class TapBarModel {
         this.materials.tile
       );
       tile.position.set(x, y, z);
+      tile.rotation.x = TILE_UP; // leicht nach vorne/oben angeschrägt
       tile.userData.tileIndex = i;
       this._addPart(tile, 'tile', this._trayGroup);
       this._tileMeshes.push(tile);

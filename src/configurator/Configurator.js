@@ -33,7 +33,7 @@ export class Configurator {
       tiles: this._defaultTiles(product.tileCount),
       logoText: this.data.brand,
       logoImage: null,
-      logoTransform: { zoom: 1, x: 0, y: 0 },
+      logoTransform: { align: 'center', scale: 1, zoom: 1 },
       selected: 'tile',
       selectedTile: null,
     };
@@ -98,7 +98,7 @@ export class Configurator {
 
   setLogoImage(image) {
     this.state.logoImage = image;
-    if (!image) this.state.logoTransform = { zoom: 1, x: 0, y: 0 };
+    if (!image) this.state.logoTransform = { align: 'center', scale: 1, zoom: 1 };
     this.model.setLogo({ text: this.state.logoText, image, transform: this.state.logoTransform });
   }
 
