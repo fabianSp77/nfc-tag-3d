@@ -33,6 +33,7 @@ export class Configurator {
       tiles: this._defaultTiles(product.tileCount),
       logoText: this.data.brand,
       logoImage: null,
+      logoTransform: { zoom: 1, x: 0, y: 0 },
       selected: 'tile',
       selectedTile: null,
     };
@@ -61,6 +62,7 @@ export class Configurator {
       tiles: this.state.tiles,
       logoText: this.state.logoText,
       logoImage: this.state.logoImage,
+      logoTransform: this.state.logoTransform,
       large: !!product.large,
     });
     this.model.setSelected(this.state.selected);
@@ -91,12 +93,22 @@ export class Configurator {
 
   setLogoText(text) {
     this.state.logoText = text;
-    this.model.setLogo({ text, image: this.state.logoImage });
+    this.model.setLogo({ text, image: this.state.logoImage, transform: this.state.logoTransform });
   }
 
   setLogoImage(image) {
     this.state.logoImage = image;
-    this.model.setLogo({ text: this.state.logoText, image });
+    if (!image) this.state.logoTransform = { zoom: 1, x: 0, y: 0 };
+    this.model.setLogo({ text: this.state.logoText, image, transform: this.state.logoTransform });
+  }
+
+  setLogoTransform(partial) {
+    this.state.logoTransform = { ...this.state.logoTransform, ...partial };
+    this.model.setLogo({
+      text: this.state.logoText,
+      image: this.state.logoImage,
+      transform: this.state.logoTransform,
+    });
   }
 
   getProduct() {

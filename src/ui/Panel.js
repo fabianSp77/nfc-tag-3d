@@ -201,27 +201,63 @@ export class Panel {
   // ---- Logo ---------------------------------------------------------------
 
   _logoSection() {
+    const file = h('input', { type: 'file', accept: 'image/png,image/svg+xml,image/jpeg', hidden: 'hidden' });
+    file.addEventListener('change', (e) => {
+      this._onLogoFile(e.target.files[0]);
+      e.target.value = '';
+    });
+    const upload = h('label', { class: 'upload' }, 'Logo-Bild hochladen', file);
+
+    // Zuschnitt-Regler (nur sichtbar, wenn ein Bild geladen ist)
+    const t = this.cfg.state.logoTransform;
+    const slider = (label, key, min, max, step, val) => {
+      const input = h('input', { type: 'range', min, max, step, value: String(val) });
+      input.addEventListener('input', (e) => this.cfg.setLogoTransform({ [key]: parseFloat(e.target.value) }));
+      return h('label', { class: 'slider-row' }, h('span', {}, label), input);
+    };
+    const remove = h('button', { type: 'button', class: 'ghost-sm' }, 'Logo entfernen');
+    remove.addEventListener('click', () => {
+      this.cfg.setLogoImage(null);
+      this._syncLogo();
+    });
+    this.refs.logoAdjust = h(
+      'div',
+      { class: 'logo-adjust' },
+      h('p', { class: 'hint' }, 'Zuschnitt — Zoom & Position:'),
+      slider('Zoom', 'zoom', '1', '3', '0.02', t.zoom),
+      slider('Horizontal', 'x', '-1', '1', '0.02', t.x),
+      slider('Vertikal', 'y', '-1', '1', '0.02', t.y),
+      remove
+    );
+
+    // Textzeile unter dem Logo (Größe passt sich der Länge an)
     const text = h('input', {
       type: 'text',
       class: 'logo-input',
-      maxlength: '14',
+      maxlength: '28',
       value: this.cfg.state.logoText,
-      placeholder: 'Dein Logo-Text',
+      placeholder: 'z. B. dein Geschäftsname',
     });
     text.addEventListener('input', (e) => this.cfg.setLogoText(e.target.value));
 
-    const file = h('input', { type: 'file', accept: 'image/png,image/svg+xml,image/jpeg', hidden: 'hidden' });
-    file.addEventListener('change', (e) => this._onLogoFile(e.target.files[0]));
-    const upload = h('label', { class: 'upload' }, 'Logo-Bild hochladen', file);
-
-    return h(
+    const section = h(
       'section',
       { class: 'block' },
-      h('h2', {}, 'Logo'),
-      h('p', { class: 'hint' }, 'Text oder eigenes Bild auf der Rückwand.'),
-      text,
-      upload
+      h('h2', {}, 'Logo & Text'),
+      h('p', { class: 'hint' }, 'Eigenes Logo hochladen (wird proportional eingepasst & ist zuschneidbar) und eine Textzeile darunter.'),
+      upload,
+      this.refs.logoAdjust,
+      h('label', { class: 'field-label' }, 'Text unter dem Logo'),
+      text
     );
+    this._syncLogo();
+    return section;
+  }
+
+  _syncLogo() {
+    if (this.refs.logoAdjust) {
+      this.refs.logoAdjust.style.display = this.cfg.state.logoImage ? 'block' : 'none';
+    }
   }
 
   _onLogoFile(fileObj) {
@@ -229,7 +265,10 @@ export class Panel {
     const reader = new FileReader();
     reader.onload = () => {
       const img = new Image();
-      img.onload = () => this.cfg.setLogoImage(img);
+      img.onload = () => {
+        this.cfg.setLogoImage(img);
+        this._syncLogo();
+      };
       img.src = reader.result;
     };
     reader.readAsDataURL(fileObj);
