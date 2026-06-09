@@ -53,15 +53,18 @@ export class TapBarModel {
   }
 
   /** Komplett-Aufbau (bei Produktwechsel / Kachelzahl-Änderung). */
-  build({ tileCount, tiles, logoText, logoImage }) {
+  build({ tileCount, tiles, logoText, logoImage, large = false }) {
     this._clear();
 
+    this._panelH = large ? PANEL_H * 1.42 : PANEL_H;
+    const sideMargin = SIDE_MARGIN + (large ? 1.6 : 0);
     const innerWidth = tileCount * TILE + (tileCount - 1) * GAP;
-    const width = innerWidth + 2 * SIDE_MARGIN;
+    const width = innerWidth + 2 * sideMargin;
 
     this._buildBase(width);
     this._buildFrame(width);
     this._buildLogo(width, logoText, logoImage);
+    this._buildBaseLabel(width);
     this._buildTiles(tileCount, innerWidth);
 
     // Icons asynchron montieren (poppen rein sobald extrudiert).
@@ -73,10 +76,10 @@ export class TapBarModel {
   _buildBase(width) {
     // Rückwand (trägt Rahmen + Logo)
     const panel = new THREE.Mesh(
-      this._track(new RoundedBoxGeometry(width, PANEL_H, PANEL_T, 4, PANEL_R)),
+      this._track(new RoundedBoxGeometry(width, this._panelH, PANEL_T, 4, PANEL_R)),
       this.materials.base
     );
-    panel.position.set(0, PANEL_H / 2, 0);
+    panel.position.set(0, this._panelH / 2, 0);
     this._addPart(panel, 'base');
 
     // Ablage vorne (Kacheln liegen darauf)
@@ -94,7 +97,7 @@ export class TapBarModel {
     const bar = 0.5;          // Stegbreite
     const depth = 0.34;
     const x0 = width / 2 - 1.4;
-    const yTop = PANEL_H - 1.5;
+    const yTop = this._panelH - 1.5;
     const yBot = SHELF_H + 1.7;
     const innerW = 2 * x0;
     const innerH = yTop - yBot;
@@ -119,7 +122,7 @@ export class TapBarModel {
   _buildLogo(width, text, image) {
     const area = this._frameArea;
     const w = area.w * 0.82;
-    const h = area.h * 0.66;
+    const h = area.h * 0.72;
     this._updateLogoTexture(text, image);
     const mat = this.materials.logo;
     mat.alphaMap = this._logoTex;
@@ -132,6 +135,42 @@ export class TapBarModel {
     logo.renderOrder = 2;
     this._addPart(logo, 'logo');
     this._logoMesh = logo;
+  }
+
+  _buildBaseLabel(width) {
+    // Dezent erhabener Schriftzug auf der Vorderkante der Ablage
+    // (eigene Beschriftung, kein Fremd-Branding).
+    const c = document.createElement('canvas');
+    c.width = 512;
+    c.height = 96;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '700 52px "Hanken Grotesk", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('(( TIPPEN ))', 256, 52);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 4;
+    this._labelTex?.dispose();
+    this._labelTex = tex;
+    this._labelMat?.dispose();
+    this._labelMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#2c2c2c'),
+      roughness: 0.5,
+      metalness: 0,
+      alphaMap: tex,
+      alphaTest: 0.5,
+    });
+    const w = Math.min(width * 0.5, 6);
+    const frontZ = PANEL_T / 2 + SHELF_D - 0.3 + 0.01;
+    const label = new THREE.Mesh(
+      this._track(new THREE.PlaneGeometry(w, (w * 96) / 512)),
+      this._labelMat
+    );
+    label.position.set(0, SHELF_H * 0.5, frontZ);
+    label.renderOrder = 2;
+    this._addPart(label, 'base');
   }
 
   _buildTiles(tileCount, innerWidth) {
@@ -220,22 +259,29 @@ export class TapBarModel {
   // ---- interne Helfer ----------------------------------------------------
 
   _updateLogoTexture(text, image) {
+    const W = 512;
+    const H = 384;
     const c = document.createElement('canvas');
-    c.width = 512;
-    c.height = 256;
+    c.width = W;
+    c.height = H;
     const ctx = c.getContext('2d');
-    ctx.clearRect(0, 0, 512, 256);
+    ctx.clearRect(0, 0, W, H);
     if (image) {
-      const ratio = Math.min(512 / image.width, 256 / image.height);
+      const ratio = Math.min(W / image.width, H / image.height);
       const w = image.width * ratio;
       const h = image.height * ratio;
-      ctx.drawImage(image, (512 - w) / 2, (256 - h) / 2, w, h);
+      ctx.drawImage(image, (W - w) / 2, (H - h) / 2, w, h);
     } else {
+      // Mehrzeilig wie auf der echten Produktrückwand (z. B. „Tap" / „Bar 2").
       ctx.fillStyle = '#ffffff';
-      ctx.font = '700 150px Georgia, "Times New Roman", serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText((text || 'Tap').slice(0, 14), 256, 140);
+      const lines = (text || 'Tap').trim().split(/\s+/).slice(0, 3);
+      const lineH = H / (lines.length + 0.5);
+      const fontPx = Math.min(170, Math.round(lineH * 0.92));
+      ctx.font = `700 ${fontPx}px Georgia, "Times New Roman", serif`;
+      const startY = H / 2 - ((lines.length - 1) * lineH) / 2;
+      lines.forEach((ln, i) => ctx.fillText(ln.slice(0, 12), W / 2, startY + i * lineH));
     }
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;

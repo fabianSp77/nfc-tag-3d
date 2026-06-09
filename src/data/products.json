@@ -29,7 +29,8 @@
       "name": "Tap Bar Max",
       "tagline": "Großformat-Aufsteller mit 4 Kacheln. Maximale Präsenz am Tresen.",
       "tileCount": 4,
-      "price": 149
+      "price": 149,
+      "large": true
     }
   ],
   "defaultProductId": "tap-bar-4",

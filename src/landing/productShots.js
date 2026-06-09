@@ -40,11 +40,20 @@ export class ProductShooter {
     this.camera.lookAt(0, 5.2, 1.2);
   }
 
-  async shoot({ tileCount, tiles, colors }) {
+  async shoot({ tileCount, tiles, colors, logoText = 'Tap', large = false }) {
     const model = new TapBarModel();
     if (colors) for (const [p, hex] of Object.entries(colors)) model.setColor(p, hex);
-    model.build({ tileCount, tiles, logoText: 'Tap', logoImage: null });
+    model.build({ tileCount, tiles, logoText, logoImage: null, large });
     this.scene.add(model.group);
+
+    // Kamera ans Format anpassen (Max ist größer)
+    if (large) {
+      this.camera.position.set(24, 18, 36);
+      this.camera.lookAt(0, 7.6, 1.2);
+    } else {
+      this.camera.position.set(20, 15, 30);
+      this.camera.lookAt(0, 5.2, 1.2);
+    }
 
     // zwei Frames warten, damit die gebündelten Icons montiert sind
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));

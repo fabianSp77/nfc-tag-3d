@@ -140,7 +140,13 @@ async function shootProductImages() {
   const colors = { base: '#F2F1EB', frame: '#1f1d1a', tile: '#245c3a', icon: '#ffffff', logo: '#1f1d1a' };
   for (const p of stands) {
     try {
-      const url = await shooter.shoot({ tileCount: p.tiles, tiles: heroTiles.slice(0, p.tiles), colors });
+      const url = await shooter.shoot({
+        tileCount: p.tiles,
+        tiles: heroTiles.slice(0, p.tiles),
+        colors,
+        logoText: p.name,
+        large: p.id === 'tap-bar-max',
+      });
       const vis = document.querySelector(`.product-card[data-id="${p.id}"] .product-vis`);
       if (vis) {
         vis.classList.add('shot');

@@ -61,6 +61,7 @@ export class Configurator {
       tiles: this.state.tiles,
       logoText: this.state.logoText,
       logoImage: this.state.logoImage,
+      large: !!product.large,
     });
     this.model.setSelected(this.state.selected);
     if (!initial) this._emitSelect();
