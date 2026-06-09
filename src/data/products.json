@@ -3,44 +3,25 @@
   "currencySymbol": "€",
   "brand": "Tap",
   "products": [
-    {
-      "id": "tap-bar-2",
-      "name": "Tap Bar 2",
-      "tagline": "2-Kachel-Aufsteller mit geprägtem Logo. Beliebt bei Cafés & Salons.",
-      "tileCount": 2,
-      "price": 89
-    },
-    {
-      "id": "tap-bar-3",
-      "name": "Tap Bar 3",
-      "tagline": "3-Kachel-Aufsteller. Bewertung, Social und ein Extra.",
-      "tileCount": 3,
-      "price": 99
-    },
-    {
-      "id": "tap-bar-4",
-      "name": "Tap Bar 4",
-      "tagline": "4-Kachel-Aufsteller. Vier frei belegbare Ziele auf einen Tap.",
-      "tileCount": 4,
-      "price": 129
-    },
-    {
-      "id": "tap-bar-max",
-      "name": "Tap Bar Max",
-      "tagline": "Großformat-Aufsteller mit 4 Kacheln. Maximale Präsenz am Tresen.",
-      "tileCount": 4,
-      "price": 149,
-      "large": true
-    }
+    { "id": "tap-bar-2", "name": "Tap Bar 2", "tagline": "2-Kachel-Aufsteller mit geprägtem Logo. Beliebt bei Cafés & Salons.", "tileCount": 2, "price": 89 },
+    { "id": "tap-bar-3", "name": "Tap Bar 3", "tagline": "3-Kachel-Aufsteller. Bewertung, Social und ein Extra.", "tileCount": 3, "price": 99 },
+    { "id": "tap-bar-4", "name": "Tap Bar 4", "tagline": "4-Kachel-Aufsteller. Vier frei belegbare Ziele auf einen Tap.", "tileCount": 4, "price": 129 },
+    { "id": "tap-bar-max", "name": "Tap Bar Max", "tagline": "Großformat-Aufsteller mit 4 Kacheln. Maximale Präsenz am Tresen.", "tileCount": 4, "price": 149, "large": true }
   ],
   "defaultProductId": "tap-bar-4",
   "range": [
-    { "id": "tap-bar-2", "name": "Tap Bar 2", "label": "Bar 2", "tiles": 2, "price": 89, "tagline": "2 Kacheln, geprägtes Logo, eigene Icons.", "configurable": true },
-    { "id": "tap-bar-3", "name": "Tap Bar 3", "label": "Bar 3", "tiles": 3, "price": 99, "tagline": "Bewertung, Social und ein Extra.", "configurable": true },
-    { "id": "tap-bar-4", "name": "Tap Bar 4", "label": "Bar 4", "tiles": 4, "price": 129, "tagline": "Vier frei belegbare Ziele auf einen Tap.", "configurable": true, "badge": "Beliebt" },
-    { "id": "tap-bar-max", "name": "Tap Bar Max", "label": "Bar Max", "tiles": 4, "price": 149, "tagline": "Großformat. Maximale Präsenz am Tresen.", "configurable": true },
-    { "id": "tap-tile", "name": "Tap Tile", "label": "Tile", "tiles": 1, "price": 15, "tagline": "Einzelne NFC-Kachel — deine Farbe, dein Icon, dein Link.", "configurable": false },
-    { "id": "tap-snap", "name": "Tap Snap", "label": "Snap", "tiles": 4, "price": 39, "tagline": "MagSafe-Visitenkarte mit vier antippbaren Ecken.", "configurable": false }
+    { "id": "tap-bar-2", "name": "Tap Bar 2", "label": "Bar 2", "type": "bar", "tiles": 2, "price": 89, "tagline": "2 Kacheln, geprägtes Logo, eigene Icons.", "configurable": true },
+    { "id": "tap-bar-3", "name": "Tap Bar 3", "label": "Bar 3", "type": "bar", "tiles": 3, "price": 99, "tagline": "Bewertung, Social und ein Extra.", "configurable": true },
+    { "id": "tap-bar-4", "name": "Tap Bar 4", "label": "Bar 4", "type": "bar", "tiles": 4, "price": 129, "tagline": "Vier frei belegbare Ziele auf einen Tap.", "configurable": true, "badge": "Beliebt" },
+    { "id": "tap-bar-max", "name": "Tap Bar Max", "label": "Bar Max", "type": "bar", "tiles": 4, "price": 149, "tagline": "Großformat. Maximale Präsenz am Tresen.", "configurable": true, "large": true },
+    { "id": "tap-board-2", "name": "Tap Board 2", "label": "Board 2", "type": "board", "tiles": 2, "price": 89, "tagline": "Flache Platte für Wand & Theke. 2 Kacheln.", "configurable": false },
+    { "id": "tap-board-3", "name": "Tap Board 3", "label": "Board 3", "type": "board", "tiles": 3, "price": 99, "tagline": "Flachmontage. Bewertung, Social, buchen.", "configurable": false },
+    { "id": "tap-board-4", "name": "Tap Board 4", "label": "Board 4", "type": "board", "tiles": 4, "price": 129, "tagline": "Volle Link-Suite an der Wand.", "configurable": false },
+    { "id": "tap-base-2", "name": "Tap Base 2", "label": "Base 2", "type": "base", "tiles": 2, "price": 29, "tagline": "Schlichte 2-Kachel-Leiste. Plug & play.", "configurable": false },
+    { "id": "tap-base-3", "name": "Tap Base 3", "label": "Base 3", "type": "base", "tiles": 3, "price": 39, "tagline": "Bewertung, Folgen, Bezahlen. Abgedeckt.", "configurable": false },
+    { "id": "tap-base-4", "name": "Tap Base 4", "label": "Base 4", "type": "base", "tiles": 4, "price": 49, "tagline": "Maximale Links, minimaler Preis.", "configurable": false },
+    { "id": "tap-tile", "name": "Tap Tile", "label": "Tile", "type": "tile", "tiles": 1, "price": 15, "tagline": "Einzelne NFC-Kachel als Anhänger — deine Farbe, dein Icon.", "configurable": false },
+    { "id": "tap-snap", "name": "Tap Snap", "label": "Snap", "type": "snap", "tiles": 4, "price": 39, "tagline": "MagSafe-Visitenkarte mit vier antippbaren Ecken.", "configurable": false }
   ],
   "parts": [
     { "id": "base", "label": "Korpus", "default": "#F2F1EB" },
@@ -66,17 +47,23 @@
     { "name": "Sand", "hex": "#D8C3A5" }
   ],
   "icons": [
-    { "id": "globe", "label": "Website" },
+    { "id": "star", "label": "Google" },
     { "id": "camera", "label": "Instagram" },
     { "id": "chat", "label": "WhatsApp" },
+    { "id": "facebook", "label": "Facebook" },
     { "id": "note", "label": "TikTok" },
-    { "id": "star", "label": "Google" },
-    { "id": "heart", "label": "Favorit" },
-    { "id": "mail", "label": "E-Mail" },
-    { "id": "pin", "label": "Standort" },
-    { "id": "music", "label": "Spotify" },
     { "id": "play", "label": "YouTube" },
-    { "id": "cart", "label": "Shop" },
-    { "id": "qr", "label": "QR-Code" }
+    { "id": "music", "label": "Spotify" },
+    { "id": "telegram", "label": "Telegram" },
+    { "id": "linkedin", "label": "LinkedIn" },
+    { "id": "x", "label": "X" },
+    { "id": "globe", "label": "Website" },
+    { "id": "mail", "label": "E-Mail" },
+    { "id": "cart", "label": "Shopping Bag" },
+    { "id": "giftbox", "label": "Giftbox" },
+    { "id": "heart", "label": "Favorit" },
+    { "id": "click", "label": "Click" },
+    { "id": "qr", "label": "QR-Code" },
+    { "id": "custom", "label": "Custom Icon" }
   ]
 }

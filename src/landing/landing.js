@@ -126,8 +126,8 @@ async function mountHero() {
 
 /* ---- Produktbilder aus dem eigenen 3D-Modell rendern ------------------- */
 async function shootProductImages() {
-  const stands = data.range.filter((p) => p.configurable && p.tiles >= 2);
-  if (!stands.length) return;
+  const items = data.range;
+  if (!items.length) return;
   let shooter;
   try {
     const { ProductShooter } = await import('./productShots.js');
@@ -139,14 +139,17 @@ async function shootProductImages() {
   const heroTiles = [{ icon: 'star' }, { icon: 'camera' }, { icon: 'chat' }, { icon: 'qr' }];
   // Katalog-Look wie die echten Produktrenders: weißer Korpus, schwarze Icons/Schrift.
   const colors = { base: '#F2F1EB', frame: '#F2F1EB', tile: '#F2F1EB', icon: '#1C1C1C', logo: '#1C1C1C' };
-  for (const p of stands) {
+  for (const p of items) {
     try {
+      const n = Math.max(1, p.tiles || 1);
+      const count = p.type === 'snap' ? 4 : n;
       const url = await shooter.shoot({
-        tileCount: p.tiles,
-        tiles: heroTiles.slice(0, p.tiles),
+        type: p.type || 'bar',
+        tileCount: n,
+        tiles: heroTiles.slice(0, count),
         colors,
         logoText: p.name,
-        large: p.id === 'tap-bar-max',
+        large: !!p.large,
       });
       const vis = document.querySelector(`.product-card[data-id="${p.id}"] .product-vis`);
       if (vis) {
