@@ -60,7 +60,7 @@ function renderProducts() {
       const action = p.configurable ? 'Konfigurieren' : 'Anfragen';
       const badge = p.badge ? `<span class="badge">${p.badge}</span>` : '';
       return `
-      <a class="product-card" href="${href}" data-reveal style="transition-delay:${i * 60}ms">
+      <a class="product-card" href="${href}" data-id="${p.id}" data-reveal style="transition-delay:${i * 60}ms">
         ${badge}
         <div class="product-vis">${productSvg(p.tiles, p.label)}</div>
         <div class="product-body">
@@ -124,7 +124,39 @@ async function mountHero() {
   }
 }
 
+/* ---- Produktbilder aus dem eigenen 3D-Modell rendern ------------------- */
+async function shootProductImages() {
+  const stands = data.range.filter((p) => p.configurable && p.tiles >= 2);
+  if (!stands.length) return;
+  let shooter;
+  try {
+    const { ProductShooter } = await import('./productShots.js');
+    shooter = new ProductShooter();
+  } catch (err) {
+    console.warn('Produkt-Renderer nicht verfügbar:', err);
+    return;
+  }
+  const heroTiles = [{ icon: 'star' }, { icon: 'camera' }, { icon: 'chat' }, { icon: 'qr' }];
+  const colors = { base: '#F2F1EB', frame: '#1f1d1a', tile: '#245c3a', icon: '#ffffff', logo: '#1f1d1a' };
+  for (const p of stands) {
+    try {
+      const url = await shooter.shoot({ tileCount: p.tiles, tiles: heroTiles.slice(0, p.tiles), colors });
+      const vis = document.querySelector(`.product-card[data-id="${p.id}"] .product-vis`);
+      if (vis) {
+        vis.classList.add('shot');
+        vis.innerHTML = `<img src="${url}" alt="${p.name}" loading="lazy" />`;
+      }
+    } catch (err) {
+      console.warn('Produkt-Render fehlgeschlagen:', p.id, err);
+    }
+  }
+  shooter.dispose();
+}
+
 renderProducts();
 wireContactForm();
 observeReveals();
 mountHero();
+// Produktbilder verzögert rendern, damit der Hero zuerst lädt.
+if ('requestIdleCallback' in window) requestIdleCallback(() => shootProductImages(), { timeout: 3000 });
+else setTimeout(shootProductImages, 900);
