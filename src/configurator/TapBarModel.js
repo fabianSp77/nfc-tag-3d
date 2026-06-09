@@ -367,7 +367,7 @@ export class TapBarModel {
     }
     const token = (this._iconTokens[index] || 0) + 1;
     this._iconTokens[index] = token;
-    loadIconGeometry(iconId, { targetSize: 1.55, depth: 0.11 })
+    loadIconGeometry(iconId, { targetSize: 1.85, depth: 0.1 })
       .then((geo) => {
         if (this._tileMeshes[index] !== tile || this._iconTokens[index] !== token) {
           geo.dispose();

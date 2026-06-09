@@ -26,8 +26,8 @@
   "parts": [
     { "id": "base", "label": "Korpus", "default": "#F2F1EB" },
     { "id": "frame", "label": "Rahmen", "default": "#1C1C1C" },
-    { "id": "tile", "label": "Kacheln", "default": "#1C1C1C" },
-    { "id": "icon", "label": "Icons", "default": "#FFFFFF" },
+    { "id": "tile", "label": "Kacheln", "default": "#F2F1EB" },
+    { "id": "icon", "label": "Icons", "default": "#1C1C1C" },
     { "id": "logo", "label": "Logo", "default": "#1C1C1C" }
   ],
   "palette": [
